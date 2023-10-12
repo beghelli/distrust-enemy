@@ -20,7 +20,11 @@ export default class Stage extends Phaser.Scene
 	create()
 	{
 		this.player.create()
-		this.add.existing(this.player)
+	}
+
+	update(gameTime: number, delta: number)
+	{
+		this.player.update(gameTime, delta)
 	}
 
 }
