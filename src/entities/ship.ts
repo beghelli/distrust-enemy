@@ -4,7 +4,9 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite
 {
 
 	cursors: Phaser.Types.Input.Keyboard.CursorKeys;
-	accelerationConstant: number = 200;
+	accelerationConstant: number = 50
+	absoluteVelocity: number = 0
+	movingAngle: number = 0
 
 	constructor(scene: Phaser.Scene, x: number, y: number, cursors: Phaser.Types.Input.Keyboard.CursorKeys)
 	{
@@ -14,7 +16,7 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite
 
 	preload()
 	{
-		this.scene.load.spritesheet('player', 'assets/spritesheets/ship.png', {frameWidth: 150, frameHeight: 130})
+		this.scene.load.spritesheet('player', 'assets/spritesheets/ship.png', {frameWidth: 65, frameHeight: 75})
 	}
 
 	create()
@@ -22,35 +24,33 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite
 		this.setTexture('player')
 		this.scene.physics.add.existing(this)
 		this.scene.add.existing(this)
-		this.setDrag(this.accelerationConstant, this.accelerationConstant)
+		this.setOrigin(0.5, 0.5)
+		this.body.setSize(65, 75, true)
 	}
 
 	update(gameTime: number, delta: number)
 	{
 		if (this.cursors.left.isDown)
 		{
-			this.setAccelerationX(-1 * this.accelerationConstant)
+			this.setAngularAcceleration(-1 * this.accelerationConstant)
 		}
 		else if (this.cursors.right.isDown)
 		{
-			this.setAccelerationX(this.accelerationConstant)
+			this.setAngularAcceleration(this.accelerationConstant)
 		}
 		else
 		{
-			this.setAccelerationX(0)
+			this.setAngularAcceleration(0)
 		}
 
 		if (this.cursors.up.isDown)
 		{
-			this.setAccelerationY(-1 * this.accelerationConstant)
-		}
-		else if (this.cursors.down.isDown)
-		{
-			this.setAccelerationY(this.accelerationConstant)
+			// @ts-ignore
+			this.scene.physics.velocityFromAngle(this.angle, this.accelerationConstant, this.body.acceleration)
 		}
 		else
 		{
-			this.setAccelerationY(0)
+			this.setAcceleration(0);
 		}
 	}
 
